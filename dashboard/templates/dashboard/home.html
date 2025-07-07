@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="max-w-3xl mx-auto mt-10 p-6 bg-white rounded-xl shadow-md">
+        <h1 class="text-2xl font-bold mb-2">Welcome, {{ request.user.username }} 🎉</h1>
+        <form method="post" action="{% url 'logout' %}" class="mb-4">
+            {% csrf_token %}
+            <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+                Logout
+            </button>
+        </form>
+
+        <hr class="my-6">
+
+        {% if twitter_username %}
+            <div class="mb-6">
+                <p class="text-green-600 font-medium">✅ Connected to Twitter as <strong>@{{ twitter_username }}</strong></p>
+            </div>
+
+            <!-- 📝 Tweet Form -->
+            <div class="mb-8">
+                <h2 class="text-xl font-semibold mb-2">Post a Tweet</h2>
+                <form method="POST">
+                    {% csrf_token %}
+                    <div class="mb-4">
+                        {{ tweet_form.tweet }}
+                    </div>
+                    <button type="submit" class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                        Tweet
+                    </button>
+                </form>
+            </div>
+
+            <hr class="my-6">
+
+            <!-- 🐦 Recent Tweets -->
+            <div>
+                <h2 class="text-xl font-semibold mb-4">Your Recent Tweets</h2>
+                {% if tweets %}
+                    <ul class="space-y-4">
+                        {% for tweet in tweets %}
+                            <li class="p-4 bg-gray-50 border rounded shadow-sm">
+                                {{ tweet.text }}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p class="text-gray-600">No tweets found.</p>
+                {% endif %}
+            </div>
+
+        {% else %}
+            <div class="text-red-500">
+                <p>🔗 You have not connected your Twitter account.</p>
+                <a href="{% url 'twitter_login' %}" class="text-blue-600 hover:underline">
+                    Connect your Twitter account
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+</body>
+</html>
